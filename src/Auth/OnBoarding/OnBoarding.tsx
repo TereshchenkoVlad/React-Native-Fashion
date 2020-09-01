@@ -9,6 +9,7 @@ import {
 
 import Slide, { SLIDE_HEIGHT } from "./Slide";
 import SubSlide from "./SubSlide";
+import Dot from "./Dot";
 
 const { width } = Dimensions.get("window");
 export const BORDER_RADIUS = 75;
@@ -26,9 +27,16 @@ const styles = StyleSheet.create({
   },
   footerContent: {
     flex: 1,
-    flexDirection: "row",
     backgroundColor: "white",
     borderTopLeftRadius: BORDER_RADIUS,
+  },
+  pagination: {
+    ...StyleSheet.absoluteFillObject,
+    height: BORDER_RADIUS,
+    width,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 const slides = [
@@ -99,35 +107,42 @@ const OnBoarding = () => {
           ))}
         </Animated.ScrollView>
       </Animated.View>
+
+      {/* Footer */}
       <View style={styles.footer}>
         <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor }]} />
-        <Animated.View
-          style={[
-            styles.footerContent,
-            {
-              width: width * slides.length,
+        <View style={styles.footerContent}>
+          <View style={styles.pagination}>
+            {slides.map((_, index) => (
+              <Dot animationValue={x} key={index} {...{ index, x }} />
+            ))}
+          </View>
+          <Animated.View
+            style={{
               flex: 1,
+              width: width * slides.length,
               transform: [{ translateX }],
-            },
-          ]}
-        >
-          {slides.map(({ subtitle, description }, index) => (
-            <SubSlide
-              key={index}
-              {...{ subtitle, description }}
-              last={index === slides.length - 1}
-              onPress={() => {
-                if (scroll.current) {
-                  scroll.current.scrollTo({
-                    x: width * (index + 1),
-                    y: 0,
-                    animated: true,
-                  });
-                }
-              }}
-            />
-          ))}
-        </Animated.View>
+              flexDirection: "row",
+            }}
+          >
+            {slides.map(({ subtitle, description }, index) => (
+              <SubSlide
+                key={index}
+                {...{ subtitle, description }}
+                last={index === slides.length - 1}
+                onPress={() => {
+                  if (scroll.current) {
+                    scroll.current.scrollTo({
+                      x: width * (index + 1),
+                      y: 0,
+                      animated: true,
+                    });
+                  }
+                }}
+              />
+            ))}
+          </Animated.View>
+        </View>
       </View>
     </View>
   );
